@@ -37,11 +37,11 @@
     <br>
     <span><b>Mời bạn chọn một trong 3 lựa chọn:</b></span><br>
     <input type="radio" name="status" value="positive"><label for="HTML">Bạn đã có xét nghiệm dương tính</label><br>
-    <input type="radio" name="status" value="negative"><label for="CSS">Bạn đã có xét nghiệm Âm tính</label><br>
+    <input type="radio" name="status" value="negative"><label for="CSS">Bạn đã có xét nghiệm âm tính</label><br>
     <input type="radio" name="status" value="unknown" checked><label for="JS">Bạn chưa đi xét nghiệm</label><br>
     <br>
   </form>
-  <p><b>Mời bạn ghi âm tiếng ho<a target="#" onclick="openmodal()"> (Hướng dẫn)</a></b></p>
+  <p><b>Mời bạn ghi âm tiếng ho<a target="#" onclick="openmodal()"> (Hướng dẫn ho đúng cách)</a></b></p>
   <div id="buttons">
     <button id="brec" class="greenbutton">Record</button>
     <button id="bpause" class="greenbutton" disabled>Pause</button>
@@ -56,12 +56,12 @@
     <div class="modal-grid">
       <div class="modal-grid-item">
         <h2>ĐỒNG Ý THAM GIA NGHIÊN CỨU</h2>
-        <p>Tôi hiểu và đồng ý đây không phải là chương trình để kiểm tra covid19 chính thức của nhà nước. <br>
-          Đây là một sản phẩm đang được nghiên cứu và tôi muốn tham gia vào nghiên cứu này.<br>
+        <p>Tôi hiểu và đồng ý đây không phải là chương trình để kiểm tra Covid-19 chính thức của nhà nước. <br>
+          Đây là một sản phẩm nghiên cứuđang chạy thử nghiệm và tôi tình nguyện tham gia vào nghiên cứu này.<br>
           <br>
-          Tôi hiểu kết quả biểu đồ trên website này chỉ là để tham khảo về khả năng nhận dạng của hệ thống trí tuệ nhân tạo (AI) đang được phát triển và không phải là kết quả xét nghiệm Covid19.
+          Tôi hiểu kết quả biểu đồ trên website này chỉ là để tham khảo về khả năng nhận dạng tiếng ho của người nhiễm Covid-19 qua hệ thống trí tuệ nhân tạo (AI) đã phát triển và không phải là kết quả xétnghiệm Covid-19.
         </p>
-        <p>Nếu bạn đã tiếp xúc với F0 và có nguy cơ bị nhiễm, xin hãy đến nơi xét nghiệm theo đúng quy định của nhà nước.</p>
+        <p>Nếu bạn đã tiếp xúc với F0 và có nguy cơ bị nhiễm, xin vui lòng đến nơi xét nghiệm theo đúng quy định của nhà nước.</p>
       </div>
       <div class="modal-grid-item">
         <button class="greenbutton" onclick="document.getElementById('modalconsent').style.display='none'">Tôi đồng ý</button> 
@@ -82,10 +82,12 @@
           <p>Bước 5: Lưu ảnh kết quả (chụp màn hình hoặc lưu về máy)</p>          
           <p>Trân trọng cảm ơn.</p>
         </div>
-        <p id="modalstatustext" class="loadingtext">    
+        <p id="modalstatustext" class="loadingtext"> </p> 
+        <p class="modal-grid-item">
+          <button id="acceptshowresult"  class="greenbutton" style="display:none" onclick="document.getElementById('modalimage').style.display='block'">Tôi đồng ý</button>   
         </p>
       </div>
-      <div id="modalimage" class="modal-grid-item">
+      <div id="modalimage" style="display:none" class="modal-grid-item">
         <!-- <img style="padding-left:5%;max-width:90%" src=test.png> -->
       </div>
     </div>
@@ -107,8 +109,8 @@
   
   <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
   <script>
-    resulttxt = "Bạn có nguy cơ nhiễm Covid-19 với xác suất là "
-    resulttxt = "Dự án đang giai đoạn thử nghiệm. Kết quả chỉ có tính chất tham khảo."
+    //resulttxt = "Bạn có nguy cơ nhiễm Covid-19 với xác suất là "
+    resulttxt = "Chương trình chạy thử nghiệm dành riêng cho các tình nguyện viên tham gia. Xin vui lòng hạn chế chia sẻ và chỉ dùng trên một thiết bị đã đăng ký."
     nomictxt = "Bạn cần cho app sử dụng microphone để ghi lại tiếng ho."
     sendfilebuttontxt = "Gửi file"
     filesenttxt = "File đã gửi."

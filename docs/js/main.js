@@ -160,6 +160,7 @@ async function pollresult(resultjson, counter) {
 			// updatemodaltext(resulttxt + data.Result)
 			updatemodaltext(resulttxt);
 			updatemodalimage(pngresult.signedurl);
+			document.getElementById('acceptshowresult').style.display='block'
 		}
 	}
 }
