@@ -154,13 +154,13 @@ async function pollresult(resultjson, counter) {
 		await pollresult(resultjson, counter);
 	} else {
 		data = await response.json();
-		if (data.Result.trim() == "No coughing sound detected"){
+		if (data.Result.length == 0){  // If JSON result does not return an array - we have an error.
 			updatemodaltext(nocoughtxt);
 		} else {
 			// updatemodaltext(resulttxt + data.Result)
 			updatemodaltext(resulttxt);
-			updatemodalimage(pngresult.signedurl);
 			document.getElementById('acceptshowresult').style.display='block'
+			updatemodalimage(pngresult.signedurl);
 		}
 	}
 }
@@ -303,19 +303,22 @@ async function uploadToS3_individual(datablob, originalfilename, status) {
 }
 
 uploadToS3 = uploadToS3_default
-token = getUrlVars()["token"];
-if (token != undefined) {
+
+if (document.cookie.match("id:[a-zA-Z0-9\/\.]*")!=null){
+	console.log("Found individual token in the cookie")
+	token = document.cookie.match("id:[a-zA-Z0-9\/\.]*")[0]
+	uploadToS3 = uploadToS3_individual
+}
+
+
+if (getUrlVars()["token"] != undefined) {
+	token = getUrlVars()["token"];
 	// If this is an individual token
 	if (token.startsWith("id:")) {
 		uploadToS3 = uploadToS3_individual
 	}
 }
 
-if (document.cookie.match("id:[a-zA-Z0-9\.]*")!=null){
-	console.log("Found individual token in the cookie")
-	token = document.cookie.match("id:[a-zA-Z0-9\.]*")[0]
-	uploadToS3 = uploadToS3_individual
-}
 
 
 

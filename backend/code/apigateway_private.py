@@ -79,14 +79,6 @@ def getobj(key):
         )
     }
 
-# create individual signing url when visit /createurl
-# mode individual: multi use for single individual
-# mode timetoken: 1 day time expire 
-def createsigningurl(mode="individual"):
-    if (mode == "individual"):
-        uniqueid=getuniqueid()
-    else:
-        pass
 
 def getuniqueid():
     # generate a random id to prevent bruteforce ;).
@@ -129,11 +121,11 @@ def generatetimetoken(n):
     return {"timetoken":"{}.{}".format(token,signedhash)}
 
 ## generate n number of individual tokens for administrator to hand out to covid patients.
-def generateindividualtokens(n):
+def generateindividualtokens(n, subfolder):
     result=[]
     for i in range(0,n):
         uniqueid=getuniqueid()
-        token="id:{}".format(uniqueid)
+        token="id:{}".format(subfolder+uniqueid)
         signedhash=createhash(token)
         result.append("{}.{}".format(token,signedhash))
     return result
@@ -224,9 +216,14 @@ def app_handler(event, context):
         if(event["queryStringParameters"] != None and "secret" in event["queryStringParameters"]):
             secret = event["queryStringParameters"]["secret"]
             if secret == adminsecret:
-                numberoftoken=abs(int(path[21:]))
-                body = generateindividualtokens(numberoftoken)
-                statuscode = 200
+                if (("f0" in event["queryStringParameters"]) and (event["queryStringParameters"]["f0"].lower().strip() == "true")):
+                    numberoftoken=abs(int(path[21:]))
+                    body = generateindividualtokens(numberoftoken, "study/")
+                    statuscode = 200
+                else:
+                    numberoftoken=abs(int(path[21:]))
+                    body = generateindividualtokens(numberoftoken, "")
+                    statuscode = 200
 
     ## /admin/gettimetoken/n generate a token that expire in n hours.
     elif path.startswith("/admin/gettimetoken/"):

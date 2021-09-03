@@ -132,3 +132,5 @@ terraform.tfvars
 *.zip
 *.hdf5
 *.wav
+result.csv
+result.png

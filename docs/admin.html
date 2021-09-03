@@ -24,6 +24,8 @@
   <div>
     <label for="password"><b>Password</b></label><br>
     <input id="password" type="password" placeholder=""></input>
+    <input type="checkbox" id="f0study" name="f0study" value="true">
+    <label for="f0study"> Xuất link dành cho f0 tham gia nghiên cứu</label><br>
     <label for="quantity"><b>Số lượng link cần xuất:</b></label><br>
     <input type="number" id="quantity" name="quantity" min="1" max="100" value="5"><br>
     <button onclick="getindividualtokens()">Submit</button>
@@ -43,8 +45,11 @@
       getindividualtokensurl = lambdaurl+"/admin/getindividual/";
       secret = document.getElementById("password").value;
       quantity = document.getElementById("quantity").value;
-      console.log(getindividualtokensurl+quantity+"?secret="+secret);
-      response = await fetch(getindividualtokensurl+quantity+"?secret="+secret);
+      url=getindividualtokensurl+quantity+"?secret="+secret
+      if (f0study.checked){
+        url += "&f0=true"
+      }
+      response = await fetch(url);
       if (response.status == 200) {
         console.log("Got the tokens!")
         tokens = await response.json();

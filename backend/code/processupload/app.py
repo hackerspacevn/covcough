@@ -114,42 +114,48 @@ def segment_cough(x, fs, cough_padding=0.2, min_cough_len=0.2, th_l_multiplier=0
     return coughSegments, cough_mask
 
 # prediction_COVID function uses ML model to generate the prediction result (negative or positive)
-
-
-def prediction_COVID(lmodel, filename, person, nmels=64):
-    log("prediction_COVID runs")
-    # Load the audio file
-    y, sr = librosa.load(filename)
-    cough_segments, cough_mask = segment_cough(
-        y, sr, cough_padding=0.1, min_cough_len=0.05)
-    pos1 = []
-    pos2 = []
-    if len(cough_segments) == 0:
+def prediction_COVID(lmodel,filename,person,nmels=64):
+    #Load the audio file
+    y,sr=librosa.load(filename)
+    cough_segments, cough_mask = segment_cough(y,sr,cough_padding=0.1,min_cough_len=0.05)
+    pos1=[]
+    pos2=[]
+    test_result=[]
+    if len(cough_segments)==0:
         test = 0
+        ax = None
+        ps2 = None
         text = 'No coughing sound detected'
-        ax=None
-        ps2=None
     else:
         for i in range(len(cough_segments)):
-            melspec = mel_specs(cough_segments[i], sr)
-            melspec = np.array([melspec.reshape((nmels, nmels, 1))])
-            prob = lmodel.predict(melspec)
+            melspec=mel_specs(cough_segments[i],sr)
+            melspec=np.array([melspec.reshape((nmels,nmels,1))])
+            prob=lmodel.predict(melspec)
             pos1.append(prob[0][1])
             pos2.append(prob[0])
-        test = np.mean(pos1)
-        text = '{prob}'.format(
-            prob=round(test*100, 2))
-    # Plot the result of each cough sound
-        result = pd.DataFrame(pos2, columns=['Healthy', 'COVID-19'])
-        ax = result.plot.bar(xlabel=person, ylabel='Probability', color=[ 'limegreen', 'red'])
-        for p in ax.patches:
-            ax.annotate(str(round(p.get_height(), 2)), (p.get_x() * 1.005,
-                        p.get_height() * 1.005), horizontalalignment='left')
-    return ax, text, pos2
+        test_result=[np.mean(pos1),np.max(pos1)]
+
+        try:
+            #Plot the result of each cough sound
+            result=pd.DataFrame(pos2,columns=['Healthy','COVID-19'])
+            #Tăng index bắt đầu từ 1
+            result.index=result.index+1
+            #Hiệu chỉnh legend bên ngoài đồ thị
+            ax=result.plot.bar(xlabel='Số tiếng ho\n'+person,ylabel='Xác suất (%)',color=['limegreen','red'],rot=0,figsize=(7, 4))
+            ax.legend(bbox_to_anchor=(1.0, 1.0))
+            ax.set_title('Kết quả phân tích tiếng ho của bạn\n Trung bình: {prob_mean}%     Cao nhất: {prob_max}%'
+            .format(prob_mean=round(np.mean(pos1)*100,2),prob_max=round(np.max(pos1)*100,2)))
+            for p in ax.patches:
+                ax.annotate(str(round(p.get_height(),2)), (p.get_x() * 1.005, p.get_height() * 1.005),horizontalalignment='left')
+        except Exception as e: 
+            print(e)
+            test = 0
+            ax = None
+            ps2 = None
+            text = 'No coughing sound detected'
+    return ax, test_result, pos2
 
 # Extract Melspectrogram function
-
-
 def mel_specs(data, sr, nmels=64):
     mel = librosa.feature.melspectrogram(data, sr, n_mels=nmels)
     mel_db = librosa.power_to_db(mel)
@@ -210,9 +216,10 @@ def lambda_handler(event, context):
     # Add entry name of person
     person_name = 'anonymous'
     print("Testing Covid!")
-    img, text, prob = prediction_COVID(final_model, filename, filename, nmels=64)
+    img, listresult, prob = prediction_COVID(final_model, filename, filename, nmels=64)
     f=open(jsonresult,'w')
-    f.write(json.dumps({"Result":text}))
+    stringresult=[str(i) for i in listresult]
+    f.write(json.dumps({"Result":stringresult}))
     f.close()
 
     if (img != None):
@@ -261,11 +268,12 @@ if __name__ == "__main__":
   #Add entry name of person
   person_name='anonymous'
   print("testing Covid!")
-  img,text,prob=prediction_COVID(final_model,dir_path+filename,filename,nmels=64)
+  img,listresult,prob=prediction_COVID(final_model,dir_path+filename,filename,nmels=64)
   #Save image
   plt.savefig('result.png')
   #Display result
-  print(text)
+  stringresult=[str(i) for i in listresult]
+  print(json.dumps(stringresult))
   prob_result=np.array(prob).tolist()
   result_data=pd.DataFrame(prob_result,columns=['Healthy','Covid-19'])
   result_data.to_csv('result.csv')
