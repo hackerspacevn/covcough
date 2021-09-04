@@ -188,9 +188,9 @@ async function uploadToS3_default(datablob, originalfilename, status) {
 			responsejson = await response.json()
 		}
 		else {
-			updatemodaltext("Error ...", false)
+			updatemodaltext("Chương trình lấy mẫu vẫn đang trong thời gian thử nghiệm, Xin đừng chia xẻ và chỉ dùng link trên một thiết bị!", false)
 			console.log("Error getting presigned key for upload")
-			closemodal();
+			// closemodal();
 			return false
 		}
 
@@ -249,9 +249,9 @@ async function uploadToS3_individual(datablob, originalfilename, status) {
 			responsejson = await response.json()
 		}
 		else {
-			updatemodaltext("Error ...", false)
+			updatemodaltext("Chương trình lấy mẫu vẫn đang trong thời gian thử nghiệm, Xin đừng chia xẻ và chỉ dùng link trên một thiết bị!", false)
 			console.log("Error getting presigned key for upload")
-			closemodal();
+			// closemodal();
 			return false
 		}
 
