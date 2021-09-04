@@ -1,32 +1,32 @@
 /// PWA app component
 ///
 //Register the service worker.
-if('serviceWorker' in navigator) {
-	navigator.serviceWorker
-	.register('../sw.js')
-	.then(function() {
-		console.log("Service Worker registered successfully");
-	})
-	.catch(function() {
-		console.log("Service worker registration failed")
-	});
-}
+// if('serviceWorker' in navigator) {
+// 	navigator.serviceWorker
+// 	.register('../sw.js')
+// 	.then(function() {
+// 		console.log("Service Worker registered successfully");
+// 	})
+// 	.catch(function() {
+// 		console.log("Service worker registration failed")
+// 	});
+// }
 
-// Check if this is an IOS device and if the webpage is not yet installed as progressive app
-function isIos() {
-	const userAgent = window.navigator.userAgent.toLowerCase();
-	return /iphone|ipad|ipod/.test( userAgent );
-  }
-  // Detects if device is in standalone mode
-  const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
-  // Checks if should display install popup notification:
-  if (isIos() && !isInStandaloneMode()) {
-	document.getElementById('addToHomescreenGadget').style.display='block'
-	this.setState({ showInstallMessage: true });
-	setTimeout(function () {
-	  document.getElementById('addToHomescreenGadget').style.display='none'
-	}, 5000)
-} 
+// // Check if this is an IOS device and if the webpage is not yet installed as progressive app
+// function isIos() {
+// 	const userAgent = window.navigator.userAgent.toLowerCase();
+// 	return /iphone|ipad|ipod/.test( userAgent );
+//   }
+//   // Detects if device is in standalone mode
+//   const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+//   // Checks if should display install popup notification:
+//   if (isIos() && !isInStandaloneMode()) {
+// 	document.getElementById('addToHomescreenGadget').style.display='block'
+// 	this.setState({ showInstallMessage: true });
+// 	setTimeout(function () {
+// 	  document.getElementById('addToHomescreenGadget').style.display='none'
+// 	}, 5000)
+// } 
   
 ///////////// MAIN APP starts here //////////////////
 
