@@ -141,12 +141,12 @@ def prediction_COVID(lmodel,filename,person,nmels=64):
             #Tăng index bắt đầu từ 1
             result.index=result.index+1
             #Hiệu chỉnh legend bên ngoài đồ thị
-            ax=result.plot.bar(xlabel='Số tiếng ho\n'+person,ylabel='Xác suất (%)',color=['limegreen','red'],rot=0,figsize=(7, 4))
+            ax=result.plot.bar(xlabel='Số tiếng ho\n'+person,ylabel='Xác suất (%)',color=['limegreen','red'],rot=0,figsize=(10, 6))
             ax.legend(bbox_to_anchor=(1.0, 1.0))
             ax.set_title('Kết quả phân tích tiếng ho của bạn\n Trung bình: {prob_mean}%     Cao nhất: {prob_max}%'
             .format(prob_mean=round(np.mean(pos1)*100,2),prob_max=round(np.max(pos1)*100,2)))
             for p in ax.patches:
-                ax.annotate(str(round(p.get_height(),2)), (p.get_x() * 1.005, p.get_height() * 1.005),horizontalalignment='left')
+                ax.annotate(str(round(p.get_height()*100,2)), (p.get_x() * 1.005, p.get_height() * 1.005),horizontalalignment='left')
         except Exception as e: 
             print(e)
             test = 0
