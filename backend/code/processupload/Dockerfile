@@ -34,7 +34,7 @@ COPY requirements.txt ./
 RUN python3.7 -m pip install -r requirements.txt
 
 # Copy training model
-COPY Early_alexnet64x64_AIVN_val_loss.hdf5 ./
+COPY Early_alexnet64x64_AIVN_val_loss_22_01_2022.hdf5 ./
 
 # Copy a test file
 COPY test.wav ./

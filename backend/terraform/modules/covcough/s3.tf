@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "bucket" {
     id      = "catchall"
     enabled = true
     expiration {
-      days = 10
+      days = 60
     }
   }
 
