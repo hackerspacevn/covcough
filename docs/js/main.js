@@ -35,8 +35,29 @@ var rec; 							//Recorder.js object
 var input; 							//MediaStreamAudioSourceNode we'll be recording
 demosite = false;
 
+
+function bufferToHex (buffer) {
+    return [...new Uint8Array (buffer)]
+        .map (b => b.toString (16).padStart (2, "0"))
+        .join ("");
+}
+
+async function digestMessage(message) {
+	const encoder = new TextEncoder();
+	const data = encoder.encode(message);
+	const hash = await crypto.subtle.digest('SHA-256', data);
+	return bufferToHex(hash);
+}
+
+demositehex=["bf4d27b7f53fcc290452b26a924a735029763a09ecab30d24ee4f5356e93597c","d810340b4366d74b219f2faf81bd1772610d7cd78a393fe8dda0b015a97fafaa"]
+currentsitehash = await digestMessage(document.location.host)
+demo=false
+if (document.location.origin.indexOf("localhost") != -1  || demositehex.includes(currentsitehash)){
+	demo=true
+}
+
 // Check if we are on demosite or localhost instance. If we are, disable name input and use "demositedata"
-if (document.location.origin.indexOf("localhost") != -1 || document.location.origin.indexOf("covcough.surge.sh") != -1) {
+if (demo) {
 	document.getElementById("name").value = "demositedata_pleaseignore"
 	document.getElementById("name").style.display = "none";
 	demosite = true;
