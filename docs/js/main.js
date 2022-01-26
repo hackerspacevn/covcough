@@ -49,19 +49,23 @@ async function digestMessage(message) {
 	return bufferToHex(hash);
 }
 
-demositehex=["bf4d27b7f53fcc290452b26a924a735029763a09ecab30d24ee4f5356e93597c","d810340b4366d74b219f2faf81bd1772610d7cd78a393fe8dda0b015a97fafaa"]
-currentsitehash = await digestMessage(document.location.host)
 demo=false
-if (document.location.origin.indexOf("localhost") != -1  || demositehex.includes(currentsitehash)){
-	demo=true
+
+async function asyncmain() {
+	demositehex=["bf4d27b7f53fcc290452b26a924a735029763a09ecab30d24ee4f5356e93597c","d810340b4366d74b219f2faf81bd1772610d7cd78a393fe8dda0b015a97fafaa"]
+	currentsitehash = await digestMessage(document.location.host)
+	if (document.location.origin.indexOf("localhost") != -1  || demositehex.includes(currentsitehash)){
+		demo=true
+	}
+	// Check if we are on demosite or localhost instance. If we are, disable name input and use "demositedata"
+	if (demo) {
+		document.getElementById("name").value = "demositedata_pleaseignore"
+		document.getElementById("name").style.display = "none";
+		demosite = true;
+	}
 }
 
-// Check if we are on demosite or localhost instance. If we are, disable name input and use "demositedata"
-if (demo) {
-	document.getElementById("name").value = "demositedata_pleaseignore"
-	document.getElementById("name").style.display = "none";
-	demosite = true;
-}
+asyncmain()
 
 // Check whether we have access to Microphone or not. If not, block access to the app and show modal overlay.
 navigator.mediaDevices.getUserMedia({ audio: true })
