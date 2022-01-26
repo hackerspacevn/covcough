@@ -136,6 +136,7 @@ def padding(array, xx, yy):
 
 # prediction_COVID function uses ML model to generate the prediction result (negative or positive)
 # Update function on 22/01/2022
+
 def prediction_COVID(lmodel,filename,person,nmels=64):
     #Load the audio file
     y,sr=librosa.load(filename, sr=None)
@@ -144,7 +145,8 @@ def prediction_COVID(lmodel,filename,person,nmels=64):
     pos2=[]
     if len(cough_segments)==0:
         test = 0
-        ax = None
+        ax1 = None
+        ax2 = None
         pos2 = None
         text = 'No coughing sound detected'
     else:
@@ -155,48 +157,47 @@ def prediction_COVID(lmodel,filename,person,nmels=64):
             pos1.append(prob[0]*100)
             pos2.append(prob[0][1]*100)
         test_result=[np.mean(pos1),np.max(pos1)]
-
-        #Graph result
+        #Vẽ kết quả phân tích tiếng ho
         try:
-            result=pd.DataFrame(pos1,columns=['Healthy','COVID-19'])
-            #Result index starts from one
+            result=pd.DataFrame(pos1,columns=['Bình thường','COVID-19'])
+            #Tăng index bắt đầu từ 1
             result.index=result.index+1
-            ax=result.plot.bar(xlabel='Số tiếng ho\n'+person,ylabel='Xác suất (%)',color=['limegreen','red'],rot=0,figsize=(7, 4))
-            #Correct legend box
-            ax.legend(bbox_to_anchor=(1.0, 1.0))
-            ax.set_title('Tiếng ho của bạn giống người nhiễm Covid-19\n Trung bình: {prob_mean}%   Cao nhất: {prob_max}%'
+            ax1=result.plot.bar(xlabel='Số tiếng ho\n'+person,ylabel='Xác suất (%)',color=['limegreen','red'],rot=0,figsize=(7, 4))
+            #Hiệu chỉnh legend bên ngoài đồ thị
+            ax1.legend(bbox_to_anchor=(1.0, 1.0))
+            ax1.set_title('Tiếng ho của bạn giống người nhiễm Covid-19\n Trung bình: {prob_mean}%     Cao nhất: {prob_max}%'
             .format(prob_mean=round(np.mean(pos2),2),prob_max=round(np.max(pos2),2)))
-            for p in ax.patches:
-                ax.annotate(str(round(p.get_height(),2)), (p.get_x() * 1.005, p.get_height() * 1.005),horizontalalignment='left')
+            for p in ax1.patches:
+                ax1.annotate(str(round(p.get_height(),2)), (p.get_x() * 1.005, p.get_height() * 1.005),horizontalalignment='left')
+
             #Vẽ biểu đồ kết luận tiếng ho
-            fig, ax = plt.subplots(figsize=(5, 5))
+            fig, ax2 = plt.subplots(figsize=(5, 5))
             wedgeprops = {'width':0.4, 'edgecolor':'#ffffff', 'linewidth':1}
             textprops = {"fontsize":12}
-            labelnames=['Healthy', 'Covid-19']
+            labelnames=['Bình thường', 'Covid-19']
             size=[round((100-np.mean(pos2)),2),round(np.mean(pos2),2)]
-            patches, texts = ax.pie(size, labels=labelnames, wedgeprops=wedgeprops, startangle=90, colors=['#05fa0d', '#f00a0a'],textprops=textprops)
-            # Healthy <20% - Green, 20-40% Healthy - Yellow, 40-50% - Orange
+            patches, texts = ax2.pie(size, labels=labelnames, wedgeprops=wedgeprops, startangle=90, colors=['#05fa0d', '#f00a0a'],textprops=textprops)
+
+        #Hiệu chỉnh màu theo từng cảnh báo Bình thường<20%-Màu xanh, Nguy cơ 20-40% màu vàng, Nguy cơ cao 40-50% màu cam     
             for i, patch in enumerate(patches):
                 texts[i].set_color(patch.get_facecolor())
-
             plt.setp(texts, fontweight=10)
             if round(np.mean(pos2),2)<=20:
                 colordisplay='#03fc45'
-                text='{}%\n Healthy'
+                text='{}%\n Bình thường'
                 test=round((100-np.mean(pos2)),2)
             if round(np.mean(pos2),2)>20 and round(np.mean(pos2),2)<=40:
                 colordisplay='#fcad03'
-                text='{}%\n Healthy'
+                text='{}%\n Bình thường'
                 test=round((100-np.mean(pos2)),2)
             if round(np.mean(pos2),2)>40 and round(np.mean(pos2),2)<50:
                 colordisplay='#fc6b03'
-                text='{}%\n Healthy'
+                text='{}%\n Bình thường'
                 test=round((100-np.mean(pos2)),2)
             if round(np.mean(pos2),2)>50:
                 colordisplay='#fa0505'
                 text='{}%\n Covid-19'
                 test=round(np.mean(pos2),2)
-
             plt.title('Kết luận phân tích tiếng ho', fontsize=16, loc='center')
             plt.text(0, 0, text.format(test), ha='center', va='center', fontsize=20,color=colordisplay)
             
@@ -204,19 +205,17 @@ def prediction_COVID(lmodel,filename,person,nmels=64):
             if round(np.mean(pos2),2)<50 and np.amax(pos2)>=70:
                 plt.text(0, -1.3, "Xin vui lòng kiểm tra lại chất lượng ghi âm tiếng ho!", ha='center', va='center', fontsize=12,color='#ff0000')
             if round(np.mean(pos2),2)>=50:
-                plt.text(0, -1.3, "Bạn nên kiểm tra lại test nhanh hoặc test PCR!", ha='center', va='center', fontsize=12,color='#ff0000')    
+                plt.text(0, -1.3, "Bạn nên kiểm tra lại test nhanh hoặc test PCR!", ha='center', va='center', fontsize=12,color='#ff0000')        
             
             plt.tight_layout()
-            # plt.show()
-
         except Exception as e: 
             print(e)
             test = 0
-            ax = None
-            pos2 = None
+            ax1 = None
+            ax2 = None
+            pos1 = None
             text = 'No coughing sound detected'
-    return ax, test_result, pos1
-
+    return ax1, ax2, test_result, pos1
 
 
 def processsample():
@@ -245,7 +244,8 @@ def lambda_handler(event, context):
     
     filename = tmppath+objkeyparts[-1]
     log("filename: {}".format(filename))
-    pngresult=filename[:-4]+".png"
+    pngresult1=filename[:-4]+"_1.png"
+    pngresult2=filename[:-4]+"_2.png"
     jsonresult=filename[:-4]+".json"
     csvresult=filename[:-4]+".csv"
 
@@ -260,30 +260,34 @@ def lambda_handler(event, context):
     # Add entry name of person
     person_name = 'anonymous'
     print("Testing Covid!")
-    img, listresult, prob = prediction_COVID(final_model, filename, filename, nmels=64)
+    img1, img2, listresult, prob = prediction_COVID(final_model, filename, filename, nmels=64)
     f=open(jsonresult,'w')
     stringresult=[str(i) for i in listresult]
     f.write(json.dumps({"Result":stringresult}))
     f.close()
 
-    if (img != None):
+    if (img1 != None):
         prob_result=np.array(prob).tolist()
         result_data=pd.DataFrame(prob_result,columns=['Healthy','Covid-19'])
         result_data.to_csv(csvresult)
         # Save image
-        plt.savefig(pngresult)
+        img1.figure.savefig(pngresult1,bbox_inches='tight')
+        img2.figure.savefig(pngresult2,bbox_inches='tight')
         # Upload results
-        s3.upload_file(pngresult,bucket,"results/"+subfolder+pngresult.split("/")[-1])
+        s3.upload_file(pngresult1,bucket,"results/"+subfolder+pngresult1.split("/")[-1])
+        s3.upload_file(pngresult2,bucket,"results/"+subfolder+pngresult2.split("/")[-1])
         s3.upload_file(csvresult,bucket,"results/"+subfolder+csvresult.split("/")[-1])
         # Remove temp files
-        os.remove(pngresult)
+        os.remove(pngresult1)
+        os.remove(pngresult2)
         os.remove(csvresult)
     os.remove(filename)
     s3.upload_file(jsonresult,bucket,"results/"+subfolder+jsonresult.split("/")[-1])
     os.remove(jsonresult)
 
     info = getobjmeta(bucket,objkey)
-    info["resulturl"]= APIGATEWAY_LAMBDA+"/download/results/"+subfolder+pngresult.split("/")[-1]
+    info["resulturl1"]= APIGATEWAY_LAMBDA+"/download/results/"+subfolder+pngresult1.split("/")[-1]
+    info["resulturl2"]= APIGATEWAY_LAMBDA+"/download/results/"+subfolder+pngresult2.split("/")[-1]
     info["sourceip"]=sourceip
     
     msg = '''
@@ -312,9 +316,10 @@ if __name__ == "__main__":
   #Add entry name of person
   person_name='anonymous'
   print("testing Covid!")
-  img,listresult,prob=prediction_COVID(final_model,dir_path+filename,filename,nmels=64)
+  img1, img2, listresult,prob=prediction_COVID(final_model,dir_path+filename,filename,nmels=64)
   #Save image
-  plt.savefig('result.png')
+  img1.figure.savefig('result_1.png',bbox_inches='tight')
+  img2.figure.savefig('result_2.png',bbox_inches='tight')
   #Display result
   stringresult=[str(i) for i in listresult]
   print(json.dumps(stringresult))

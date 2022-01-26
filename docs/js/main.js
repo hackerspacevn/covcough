@@ -167,7 +167,8 @@ function stopRecording() {
 
 async function pollresult(resultjson, counter) {
 	counter += 1;
-	pngresult = resultjson.pngresult;
+	pngresult1 = resultjson.pngresult1;
+	pngresult2 = resultjson.pngresult2;
 	jsonresult = resultjson.jsonresult;
 	let response = await fetch(jsonresult.signedurl)
 	if (counter > 60) {
@@ -185,7 +186,10 @@ async function pollresult(resultjson, counter) {
 			// updatemodaltext(resulttxt + data.Result)
 			updatemodaltext(resulttxt);
 			document.getElementById('acceptshowresult').style.display='block'
-			updatemodalimage(pngresult.signedurl);
+			modalimage = document.getElementById("modalimage");
+			modalimage.innerHTML = "";
+			updatemodalimage(pngresult2.signedurl);
+			updatemodalimage(pngresult1.signedurl);
 		}
 	}
 }
@@ -442,7 +446,6 @@ function checkfingerprint(token) {
 
 function updatemodalimage(url) {
 	modalimage = document.getElementById("modalimage");
-	modalimage.innerHTML = "";
 	img = document.createElement('img');
 	img.src = url
 	img.style.cssText = "padding-left: 5%;max-width: 90%;"
@@ -465,4 +468,11 @@ function closemodal(){
 
 function openmodal(){
 	document.body.classList.add('showmodal')
+}
+
+function showimage(){
+	updatetext.style.display = 'none'
+	modalstatustext.style.display='none'
+	mainmodalgrid.style["margin-top"]="5px"
+	document.getElementById('modalimage').style.display='block';
 }

@@ -59,7 +59,8 @@ def getposturl(filename, subfolder=""):
     keyname = "records/{}{}.wav".format(subfolder,filename)
     resp={
         "signedupload":s3.generate_presigned_post(Bucket=bkt,Key=keyname,Fields=fields,Conditions=conditions),
-        "pngresult": getobj("results/{}{}.png".format(subfolder,filename)),
+        "pngresult1": getobj("results/{}{}_1.png".format(subfolder,filename)),
+        "pngresult2": getobj("results/{}{}_2.png".format(subfolder,filename)),
         "jsonresult": getobj("results/{}{}.json".format(subfolder,filename)),
         "csvresult": getobj("results/{}{}.csv".format(subfolder,filename))
     }

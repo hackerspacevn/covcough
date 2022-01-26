@@ -71,7 +71,7 @@
   </div>
 
   <div id="modal" class="modal" onclick="closemodal()">
-    <div class="modal-grid">
+    <div id="mainmodalgrid" class="modal-grid">
       <div id="modalstatus" class="modal-grid-item">
         <div id="helptext" class="modal-grid-item">
           <h3 id="h-ng-d-n-ghi-m-ng-c-ch-">Hướng dẫn ghi âm đúng cách:</h3>
@@ -82,16 +82,18 @@
           <p>Bước 5: Lưu ảnh kết quả (chụp màn hình hoặc lưu về máy)</p>          
           <p>Trân trọng cảm ơn.</p>
         </div>
-        <p id="modalstatustext" class="loadingtext"> </p> 
-        <p class="modal-grid-item">
-          <button id="acceptshowresult"  class="greenbutton" style="display:none" onclick="document.getElementById('modalimage').style.display='block'">Tôi đồng ý</button>   
-        </p>
-      </div>
-      <div id="modalimage" style="display:none" class="modal-grid-item">
-        <!-- <img style="padding-left:5%;max-width:90%" src=test.png> -->
+        <div id="updatetext">
+          <p id="modalstatustext" class="loadingtext"> </p> 
+          <p class="modal-grid-item">
+            <button id="acceptshowresult"  class="greenbutton" style="display:none" onclick="showimage()">Tôi đồng ý</button>   
+          </p>
+       </div>
+      <div id="modalimage" style="display:none" class="modal-grid-item"></div>
+        <!-- <img style="padding-left:5%;max-width:90%" src=test.png> -->   
       </div>
     </div>
   </div>
+  
   <div id="addToHomescreenGadget" class="addToHomescreenGadget" onclick="document.getElementById('addToHomescreenGadget').style.display='none'">
       <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 222 222" enable-background="new 0 0 222 222" xml:space="preserve">
   <path fill="#FFFFFF" stroke="#D3D3D3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
