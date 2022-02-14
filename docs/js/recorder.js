@@ -43,7 +43,7 @@ var Recorder = exports.Recorder = (function () {
 
         this.config = {
             bufferLen: 4096,
-            numChannels: 1,
+            numChannels: 2,
             mimeType: 'audio/wav'
         };
         this.recording = false;
@@ -208,7 +208,7 @@ var Recorder = exports.Recorder = (function () {
                 /* sample rate */
                 view.setUint32(24, sampleRate, true);
                 /* byte rate (sample rate * block align) */
-                view.setUint32(28, sampleRate * 4, true);
+                view.setUint32(28, sampleRate * numChannels * 2, true);
                 /* block align (channel count * bytes per sample) */
                 view.setUint16(32, numChannels * 2, true);
                 /* bits per sample */
