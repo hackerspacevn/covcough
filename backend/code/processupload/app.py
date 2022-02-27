@@ -256,7 +256,7 @@ def lambda_handler(event, context):
     # Add the path of ML model
     print("loading model!")
     final_model = keras.models.load_model(
-        'Early_alexnet64x64_AIVN_val_loss_22_01_2022.hdf5')
+        'Early_CoughCovid_ResNet50_15_02_2022.hdf5')
     # Add entry name of person
     person_name = 'anonymous'
     print("Testing Covid!")
@@ -309,7 +309,7 @@ A new record was received. This file will expire in 10 days:
 if __name__ == "__main__":
   #Add the path of ML model
   print("loading model!")
-  final_model = keras.models.load_model('./Early_alexnet64x64_AIVN_val_loss_22_01_2022.hdf5')
+  final_model = keras.models.load_model('./Early_CoughCovid_ResNet50_15_02_2022.hdf5')
   #Add file path here
   dir_path='./'
   filename='test.wav'

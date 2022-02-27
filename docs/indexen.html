@@ -2,7 +2,19 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="San">
+  <meta property="og:type"  content="article" />
+  <meta property="og:image"   content="/images/icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="blue">
+  <meta name="apple-mobile-web-app-title" content="With Manifest">
+  <link rel="apple-touch-icon" href="/images/icon.png">
+  <link rel="manifest" href="/manifest.json">
+
   <title>Covid coughing study</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,49 +28,49 @@
   <button style="background-color: #48c77400; position:absolute; margin-right:10px ;margin-top: 10px;top:0; right:0;"
     onclick='document.location="./index.html"'>🇻🇳</button>
   <p>
-  <h2>Covid19 coughing study</h2>
-  <small>AI model developed by <a href="https://scholar.google.com/citations?user=imY-iisAAAAJ&hl=vi">Dr Nguyen Dinh Son.</a></small>
-  <small><i><a href=http://dut.udn.vn />University of Science and Technology,<br>The University of
-      Danang</a></i></small>
-  </p>
-  <form id="statuschoices"><input id="name" placeholder="Name (optional)"></input>
-    <br>
-    <span><b>Please select one of the following options:</b></span><br>
-    <input type="radio" name="status" value="positive"><label for="HTML">You are tested Positive to Covid19.</label><br>
-    <input type="radio" name="status" value="negative"><label for="CSS">You are tested Negative to Covid19.</label><br>
-    <input type="radio" name="status" value="unknown" checked><label for="JS">You have not had any tested
-      recently.</label><br>
-    <br>
-  </form>
-  <p><b>Please record your coughing<a target="#" onclick="openmodal()"> (Instruction)</a></b></p>
-  <div id="buttons">
-    <button id="brec">Record</button>
-    <button id="bpause" disabled>Pause</button>
-    <button id="bstop" disabled>Stop</button>
-  </div>
-  <p><strong>List of records:</strong><br><small style="opacity: 0.5;">Please pick the best sample and upload it.</small></p>
-  <ol id="records"></ol>
-
-  <div id="modalconsent" class="modaloverlay" >
-    <div class="modal-grid">
-      <div class="modal-grid-item">
-        <h2>CONSENT TO PARTICIPATE IN RESEARCH</h2>
-        <p>If you give your consent, you have the option to participate in a research study conducted by Dr Nguyen Dinh Son.<br><br>
-          You understand that the study is ongoing and any data or result being shown here does not indicate if you are infected with Covid 19 or not.<br><br>
-          If you have attended a confirmed COVID-19 exposure site, please get tested properly at Covid19 testing site.
-        </p>
-        <p></p>
-      </div>
-      <div class="modal-grid-item">
-        <button class="greenbutton" onclick="document.getElementById('modalconsent').style.display='none'">I agree</button> 
-      </div>
-      
+    <h2>Covid19 coughing study</h2>
+    <small>AI model developed by <a href="https://scholar.google.com/citations?user=imY-iisAAAAJ&hl=vi">Dr Nguyen Dinh Son.</a></small>
+    <small><i><a href=http://dut.udn.vn />University of Science and Technology,<br>The University of
+        Danang</a></i></small>
+    </p>
+    <form id="statuschoices"><input id="name" placeholder="Name (optional)"></input>
+      <br>
+      <span><b>Please select one of the following options:</b></span><br>
+      <input type="radio" name="status" value="positive"><label for="HTML">You are tested Positive to Covid19.</label><br>
+      <input type="radio" name="status" value="negative"><label for="CSS">You are tested Negative to Covid19.</label><br>
+      <input type="radio" name="status" value="unknown" checked><label for="JS">You have not had any tested
+        recently.</label><br>
+      <br>
+    </form>
+    <p><b>Please record your coughing<a target="#" onclick="openmodal()"> (Instruction)</a></b></p>
+    <div id="buttons">
+      <button id="brec">Record</button>
+      <button id="bpause" disabled>Pause</button>
+      <button id="bstop" disabled>Stop</button>
     </div>
-  </div>
+    <p><strong>List of records:</strong><br><small style="opacity: 0.5;">Please pick the best sample and upload it.</small></p>
+    <ol id="records"></ol>
 
+
+    <div id="modalconsent" class="modaloverlay" >
+      <div class="modal-grid">
+        <div class="modal-grid-item">
+          <h2>CONSENT TO PARTICIPATE IN RESEARCH</h2>
+          <p>If you give your consent, you have the option to participate in a research study conducted by Dr Nguyen Dinh Son.<br><br>
+            You understand that the study is ongoing and any data or result being shown here does not indicate if you are infected with Covid 19 or not.<br><br>
+            If you have attended a confirmed COVID-19 exposure site, please get tested properly at Covid19 testing site.
+          </p>
+          <p></p>
+        </div>
+        <div class="modal-grid-item">
+          <button class="greenbutton" onclick="document.getElementById('modalconsent').style.display='none'">I agree</button> 
+        </div>
+        
+      </div>
+    </div>
 
   <div id="modal" class="modal" onclick="closemodal()">
-    <div class="modal-grid">
+    <div id="mainmodalgrid" class="modal-grid">
       <div id="modalstatus" class="modal-grid-item">
         <div id="helptext" class="modal-grid-item">
           <h3 id="h-ng-d-n-ghi-m-ng-c-ch-">Instruction:</h3>
@@ -69,17 +81,36 @@
           <p>Step 5: Store the image result (or take a screenshot of the phone) if needed to.</p>          
           <p>Thank you.</p>
         </div>
-        <p id="modalstatustext" class="loadingtext"></p>
+        <div id="updatetext">
+          <p id="modalstatustext" class="loadingtext"> </p> 
+          <p class="modal-grid-item">
+            <button id="acceptshowresult"  class="greenbutton" style="display:none" onclick="showimage()">I accept</button>   
+          </p>
+       </div>
+      <div id="modalimage" style="display:none" class="modal-grid-item"></div>
+        <!-- <img style="padding-left:5%;max-width:90%" src=test.png> -->   
       </div>
-      <div id="modalimage" class="modal-grid-item">
-        <!-- <img style="padding-left:5%;max-width:90%" src=test.png> -->
-      </div>
-
     </div>
   </div>
+  
+  <div id="addToHomescreenGadget" class="addToHomescreenGadget" onclick="document.getElementById('addToHomescreenGadget').style.display='none'">
+      <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 222 222" enable-background="new 0 0 222 222" xml:space="preserve">
+  <path fill="#FFFFFF" stroke="#D3D3D3" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+  M18.005,5C10.827,5,5,9.48,5,15v167c0,5.52,5.827,10,13.006,10H83.43l28.22,25l26.959-25h65.386c7.18,0,13.006-4.48,13.006-10V15
+  c0-5.52-5.826-10-13.006-10H18.005z"/>
+  <text transform="matrix(1 0 0 1 20.0195 173.2598)" fill="#666666" font-family="'TrebuchetMS', 'Segoe Ui'" font-size="31">Home Screen</text>
+  <g>
+  <path fill="#666666" d="M165,127.189c0,6.627-5.373,12-12,12H69c-6.627,0-12-5.373-12-12v-84c0-6.628,5.373-12,12-12h84
+      c6.627,0,12,5.372,12,12V127.189z"/>
+  <line fill="none" stroke="#FFFFFF" stroke-width="9" stroke-miterlimit="10" x1="111" y1="52.189" x2="111" y2="116.189"/>
+  <line fill="none" stroke="#FFFFFF" stroke-width="9" stroke-miterlimit="10" x1="79" y1="84.189" x2="143" y2="84.189"/>
+  </g>
+</svg>
+</div>
+  
   <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
   <script>
-    resulttxt = "Chance of you getting Covid-19 is "
+    //resulttxt = "Bạn có nguy cơ nhiễm Covid-19 với xác suất là "
     resulttxt = "This project is in the testing phase. These results are for reference only."
     nomictxt = "This app requires microphone access to record your coughing sound."
     sendfilebuttontxt = "Upload"
