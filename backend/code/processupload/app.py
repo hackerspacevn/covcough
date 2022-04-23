@@ -6,7 +6,7 @@ import time
 import os
 import json
 import re
-import datetime
+from datetime import datetime
 import urllib.request
 from urllib.parse import urlsplit, urlunsplit
 
@@ -137,7 +137,7 @@ def padding(array, xx, yy):
     bb = yy-b-w
     return np.pad(array, pad_width=((a, aa), (b, bb)), mode='constant')
 
-# Update the function on 03/04/2022
+# Update the function on 14/04/2022
 # Function to predict covid-19 for Multi-language interface
 
 
@@ -162,9 +162,10 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
         alert_cough_file2 = 'Tệp ghi âm {} bị lỗi!'
         num_cough_alert = 'Số tiếng ho được ghi âm là {} '
         num_cough_alert1 = '(Nên ho ít nhất 6 tiếng ho)\n'
-        num_cough_limit0 = 'Không có tiếng ho nào vượt quá 70%!\n'
-        num_cough_limit1 = 'Chỉ có {} tiếng ho vượt quá 70%!\n'
-        num_cough_limit2 = 'Có {} tiếng ho vượt quá 70%!\n'
+        num_cough_limit0 = 'Không có tiếng ho nào vượt quá 50%!\n'
+        num_cough_limit1 = 'Chỉ có {} tiếng ho vượt quá 50%!\n'
+        num_cough_limit2 = 'Có {} tiếng ho vượt quá 50%!\n'
+        date_time_alert = '(thực hiện vào lúc {} ngày {} theo giờ UTC)'
         alert_cough_covid = 'Tiếng ho của bạn có khả năng giống của người nhiễm Covid-19\n'
         alert_final = 'Kết luận:\n'
     if language == 'EN':
@@ -186,11 +187,17 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
         alert_cough_file2 = 'There is an error!'
         num_cough_alert = 'Number of recorded cough sounds are {} '
         num_cough_alert1 = '(recommended at least six cough sounds)\n'
-        num_cough_limit0 = 'There is no cough sound exceeding 70%!\n'
-        num_cough_limit1 = 'There is only {} cough sounds exceeding 70%!\n'
-        num_cough_limit2 = 'There are {} cough sounds exceeding 70%!\n'
+        num_cough_limit0 = 'There is no cough sound exceeding 50%!\n'
+        num_cough_limit1 = 'There is only {} cough sounds exceeding 50%!\n'
+        num_cough_limit2 = 'There are {} cough sounds exceeding 50%!\n'
+        date_time_alert = '            (tested on {} {} UTC)'
         alert_cough_covid = 'Likelyhood of your cough being similar to Covid-19 patient\n'
         alert_final = 'Conclusion:\n'
+    # Lấy ngày và giờ
+    now = datetime.now()
+    date_now = now.date().strftime('%d/%m/%Y')
+    time_now = now.time().strftime('%H:%M:%S')
+    date_time_alert = date_time_alert.format(time_now, date_now)
     # Lấy MelSpec
     y, sr = librosa.load(filename, sr=None)
     cough_segments, cough_mask = segment_cough(
@@ -211,7 +218,6 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
                 prob = lmodel.predict(melspec)
                 pos1.append(prob[0]*100)
                 pos2.append(prob[0][1]*100)
-
                 a = cough_segments[i][32256:]
                 melspec = mel_specs(a, sr, nmels)
                 melspec = np.array([melspec.reshape((nmels, nmels, 1))])
@@ -226,7 +232,6 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
                 pos1.append(prob[0]*100)
                 pos2.append(prob[0][1]*100)
         test_result = [np.mean(pos1), np.max(pos1)]
-
     # Vẽ kết quả phân tích tiếng ho
     result = pd.DataFrame(pos1, columns=columns_df)
     # Tăng index bắt đầu từ 1
@@ -239,27 +244,18 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
     for p in ax1.patches:
         ax1.annotate(str(round(p.get_height(), 2)), (p.get_x() *
                      1.005, p.get_height() * 1.005), horizontalalignment='left')
-
 # Hiệu chỉnh màu theo từng cảnh báo Bình thường<20%-Màu xanh, Nguy cơ 20-40% màu vàng, Nguy cơ cao 40-50% màu cam
     test0 = round((np.mean(pos2)), 2)
     test1 = round((np.max(pos2)), 2)
     text_mean = text_alert[1]
     text_max = text_alert[1]
     if round(np.mean(pos2), 2) <= 20:
-        colordisplay_mean = '#00cacd'
-        colordisplay_max = '#00cacd'
-        text_mean = text_alert[0]
-        text_max = text_alert[0]
-        test0 = round((100-np.mean(pos2)), 2)
+        colordisplay_mean = '#e73786'
+        colordisplay_max = '#e73786'
         if round(np.max(pos2), 2) >= 50:
             text1 = alert[1]
-            text_max = text_alert[1]
-            test1 = round((np.max(pos2)), 2)
-            colordisplay_max = '#e73786'
         else:
             text1 = alert[0]
-            test1 = round((100-np.max(pos2)), 2)
-
     if round(np.mean(pos2), 2) > 20 and round(np.mean(pos2), 2) <= 30:
         colordisplay_mean = '#e73786'
         colordisplay_max = '#e73786'
@@ -267,7 +263,6 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
             text1 = alert[3]
         else:
             text1 = alert[2]
-
     if round(np.mean(pos2), 2) > 30 and round(np.mean(pos2), 2) <= 40:
         colordisplay_mean = '#e73786'
         colordisplay_max = '#e73786'
@@ -275,19 +270,16 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
             text1 = alert[4]
         else:
             text1 = alert[3]
-
     if round(np.mean(pos2), 2) > 40 and round(np.mean(pos2), 2) < 50:
         colordisplay_mean = '#e73786'
         colordisplay_max = '#e73786'
         text1 = alert[4]
-
     if round(np.mean(pos2), 2) > 50:
         colordisplay_mean = '#e73786'
         colordisplay_max = '#e73786'
         text1 = alert[5]
-
     # Kiểm tra số tiếng ho trên 50% covid-19
-    num_cough50 = result[result['COVID-19'] >= 70].count()[1]
+    num_cough50 = result[result['COVID-19'] >= 50].count()[1]
     # Thông báo số tiếng ho
     thongbao = num_cough_alert.format(num_cough)
     # Kiểm tra số tiếng ho
@@ -308,22 +300,23 @@ def prediction_COVID(lmodel, filename, person, nmels, language):
     # Vẽ biểu đồ kết luận tiếng ho
     fig, ax2 = plt.subplots(1, 2, figsize=(7, 5))
     fig.suptitle(title_plot, fontsize=16)
-    fig.text(0.1, 0.07, thongbao, fontsize=12, color='#000000')
-    fig.text(0.1, 0.07, text1, fontsize=12, color='#ff0000')
+    fig.text(0.1, 0.03, thongbao, fontsize=12, color='#000000')
+    fig.text(0.1, 0.03, text1, fontsize=12, color='#ff0000')
+    fig.text(0.22, 0.90, date_time_alert, fontsize=12, color='#000000')
     wedgeprops = {'width': 0.4, 'edgecolor': '#ffffff', 'linewidth': 1}
     textprops = {"fontsize": 12}
     size1 = [round((100-np.mean(pos2)), 2), round(np.mean(pos2), 2)]
     size2 = [round((100-np.max(pos2)), 2), round(np.max(pos2), 2)]
     ax2[0].pie(size1, pctdistance=0.7, wedgeprops=wedgeprops,
                startangle=90, colors=['#00cacd', '#e73786'], textprops=textprops)
-    ax2[0].set_title(title1, fontsize=12)
+    ax2[0].set_title(title1, fontsize=14)
     ax2[0].text(0, 0, text_mean.format(test0), ha='center',
-                va='center', fontsize=16, color=colordisplay_mean)
+                va='center', fontsize=18, color=colordisplay_mean)
     ax2[1].pie(size2, pctdistance=0.7, wedgeprops=wedgeprops,
                startangle=90, colors=['#00cacd', '#e73786'], textprops=textprops)
-    ax2[1].set_title(title2, fontsize=12)
+    ax2[1].set_title(title2, fontsize=14)
     ax2[1].text(0, 0, text_max.format(test1), ha='center',
-                va='center', fontsize=16, color=colordisplay_max)
+                va='center', fontsize=18, color=colordisplay_max)
     plt.tight_layout()
     return ax1, ax2, test_result, pos2
 
@@ -365,7 +358,8 @@ def lambda_handler(event, context):
 
     # Add the path of ML model
     print("loading model!")
-    final_model = keras.models.load_model('Early_CoughCovid_ResNet50_15_02_2022.hdf5')
+    final_model = keras.models.load_model(
+        'Early_CoughCovid_ResNet50_15_02_2022.hdf5')
     # Add entry name of person
     person_name = 'anonymous'
     print("Testing Covid!")
@@ -382,8 +376,8 @@ def lambda_handler(event, context):
         #                            'Healthy', 'Covid-19'])
         # result_data.to_csv(csvresult)
         # Save image
-        img1.figure.savefig(pngresult1,bbox_inches='tight')
-        plt.savefig(pngresult2,bbox_inches='tight')
+        img1.figure.savefig(pngresult1, bbox_inches='tight')
+        plt.savefig(pngresult2, bbox_inches='tight')
 
         # Upload results
         s3.upload_file(pngresult1, bucket, "results/" +
@@ -420,30 +414,32 @@ A new record was received. This file will expire in 10 days:
         "username": "covcough",
                     "text": msg
     }
-    print(sourceip)
+    print("UserIP: " + sourceip)
     nofify_slack(payload)
 
 
 # This is for local test
 if __name__ == "__main__":
-  tf.get_logger().setLevel('ERROR')
-  tf.autograph.set_verbosity(3)
-  #Add the path of ML model
-  print("loading model!")
-  final_model = keras.models.load_model('./Early_CoughCovid_ResNet50_15_02_2022.hdf5')
-  #Add file path here
-  dir_path='./'
-  filename='test.wav'
-  #Add entry name of person
-  person_name='anonymous'
-  print("testing Covid!")
-  #Select language='VN' for Vietnamese and language='EN' for English
-  img1, img2, listresult, prob = prediction_COVID(final_model,dir_path+filename,filename,nmels=64,language='VN')
-  #Save image 1 and 2
-  img1.figure.savefig('result1.png',bbox_inches='tight')
-  plt.savefig('result2.png',bbox_inches='tight')
-  #Display result
-  stringresult=[str(i) for i in listresult]
+    tf.get_logger().setLevel('ERROR')
+    tf.autograph.set_verbosity(3)
+    # Add the path of ML model
+    print("loading model!")
+    final_model = keras.models.load_model(
+        './Early_CoughCovid_ResNet50_15_02_2022.hdf5')
+    # Add file path here
+    dir_path = './'
+    filename = 'test.wav'
+    # Add entry name of person
+    person_name = 'anonymous'
+    print("testing Covid!")
+    # Select language='VN' for Vietnamese and language='EN' for English
+    img1, img2, listresult, prob = prediction_COVID(
+        final_model, dir_path+filename, filename, nmels=64, language='VN')
+    # Save image 1 and 2
+    img1.figure.savefig('result1.png', bbox_inches='tight')
+    plt.savefig('result2.png', bbox_inches='tight')
+    # Display result
+    stringresult = [str(i) for i in listresult]
 #   print(json.dumps(stringresult))
 #   prob_result=np.array(prob).tolist()
 #   result_data=pd.DataFrame(prob_result,columns=['Healthy','Covid-19'])

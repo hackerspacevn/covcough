@@ -27,7 +27,7 @@
                     "arn": "arn:aws:s3:::covcough-private"
                 },
                 "object": {
-                    "key": "records/06938f4c301f772c743f07c77f181cd80ceffe8f8c32c760ecffa096fa1eb76a_demosite.wav",
+                    "key": "records/00100f8086b81bf2266dcd26875d596cf68050b144af0098b3ebc6a6ebe2790e_demosite.wav",
                     "size": 688172,
                     "eTag": "8cda749610a8f24772183cf6fa50cc03",
                     "sequencer": "00611662F4F098B41C"
